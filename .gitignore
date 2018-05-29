@@ -2,6 +2,7 @@ target/
 .mvn/
 .gradle/
 .idea/
+out/
 
 ### STS ###
 .apt_generated
