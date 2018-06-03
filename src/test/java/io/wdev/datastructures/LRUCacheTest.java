@@ -3,27 +3,95 @@ package io.wdev.datastructures;/*
  */
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.internal.util.reflection.Whitebox;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Map;
 
+import static org.junit.Assert.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class LRUCacheTest {
 
-    @Test public void testSomeLibraryMethod() {
-        LRUCache<String, Integer> lru = new LRUCache<>(3);
-        lru.put("zero", 0);
-        lru.put("one", 1);
-        lru.put("two", 2);
-        lru.put("three", 3);
-        lru.put("four", 4);
-        lru.put("five", 5);
+    @Test
+    public void testPut() {
+        // given
+        int capacity = 3;
+        LRUCache<String, Integer> lru = new LRUCache<>(capacity);
 
-        assertNull("LRUCache.get(\"zero\") should return NULL", lru.get("zero"));
-        assertNull("LRUCache.get(\"one\") should return NULL", lru.get("one"));
-        assertNull("LRUCache.get(\"two\") should return NULL", lru.get("two"));
-        assertEquals("LRUCache.get(\"three\") should return 3", Integer.valueOf(3), lru.get("three"));
-        assertEquals("LRUCache.get(\"four\") should return 4", Integer.valueOf(4), lru.get("four"));
-        assertEquals("LRUCache.get(\"five\") should return 5", Integer.valueOf(5), lru.get("five"));
+        String key;
+        Integer val;
+        int size = 0;
+
+        // put 3 new elements to cache
+        putElements(lru, 0, 2);
+
+        // put same 3 elements to cache
+        putElements(lru, 0, 2);
+
+        // put 2 new elements to cache
+        putElements(lru, 3, 4);
+
+        // put 3 elements to cache
+/*        for (val = 0; val < 3; val++) {
+            key = val.toString();
+            size++;
+
+            // when
+            lru.put(key, val);
+
+            // then
+            assertDataContains(data, key, val, size);
+        }*/
+
+        // put 2 elements to cache
+
+/*        //when 1
+        Integer val1 = 0;
+        String key1 = val0.toString();
+        lru.put(key0, val0);
+
+        //then 1
+        assertDataContains(data, key0, val0, 1);*/
+    }
+
+    private void putElements(LRUCache<String, Integer> lru, int keyValFrom, int keyValTo) {
+        Integer val = keyValFrom;
+        String key;
+        Map<String, LRUCache.Node> data = (Map<String, LRUCache.Node>) Whitebox.getInternalState(lru, "data");
+        int capacity = (int) Whitebox.getInternalState(lru, "capacity");
+        int size = data.size();
+        do {
+            key = val.toString();
+
+            // when
+            lru.put(key, val);
+            LRUCache.Node head = (LRUCache.Node) Whitebox.getInternalState(lru, "head");
+            LRUCache.Node tail = (LRUCache.Node) Whitebox.getInternalState(lru, "tail");
+            assertNotNull(head);
+            assertNotNull(tail);
+            // then
+            if (size < capacity) {
+                size++;
+            }
+            assertDataContains(data, key, val, size);
+            val++;
+        } while (val <= keyValTo);
+    }
+
+    private void assertDataContains(Map<String, LRUCache.Node> data, String key, Integer val, int size) {
+        assertNotNull(data);
+        assertEquals(data.size(), size);
+        assertTrue(data.containsKey(key));
+        assertNotNull(data.get(key));
+        assertEquals(data.get(key).getKey(), key);
+        assertEquals(data.get(key).getVal(), val);
+    }
+
+    private void assertDataNotContains(Map<String, LRUCache.Node> data, String key, int size) {
+        assertNotNull(data);
+        assertEquals(data.size(), size);
+        assertFalse(data.containsKey(key));
     }
 }

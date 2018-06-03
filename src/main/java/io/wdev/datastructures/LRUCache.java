@@ -26,12 +26,14 @@ public class LRUCache<K, V> {
         }
 
         Node<K, V> node = this.data.get(key);
+        remove(node);
+        putToHead(node);
         return node.val;
     }
 
     public void put(K key, V val) {
         if (data.containsKey(key)) {
-            Node<K, V> node = data.get(key);
+            Node<K, V> node = this.data.get(key);
             node.val = val;
             remove(node);
             putToHead(node);
@@ -52,9 +54,8 @@ public class LRUCache<K, V> {
         if (!this.data.containsKey(key)) {
             return null;
         }
-        Node<K, V> node = this.data.get(key);
+        Node<K, V> node = this.data.remove(key);
         remove(node);
-        putToHead(node);
         return node.val;
     }
 
@@ -89,7 +90,7 @@ public class LRUCache<K, V> {
         }
     }
 
-    private final class Node<K, V> {
+    final class Node<K, V> {
         private K key;
         private V val;
         private Node<K,V> next;
@@ -98,6 +99,22 @@ public class LRUCache<K, V> {
         public Node(K key, V val) {
             this.key = key;
             this.val = val;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getVal() {
+            return val;
+        }
+
+        public Node<K,V> getNextNode() {
+            return next;
+        }
+
+        public Node<K,V> getPrevNode() {
+            return prev;
         }
     }
 
