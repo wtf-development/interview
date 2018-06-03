@@ -36,7 +36,7 @@ public class LRUCache<K, V> {
             remove(node);
             putToHead(node);
         } else {
-            Node<K, V> node = new Node(key, val);
+            Node<K, V> node = new Node<K, V>(key, val);
             if (this.data.size() < capacity) {
                 putToHead(node);
             } else {
@@ -58,6 +58,7 @@ public class LRUCache<K, V> {
         return node.val;
     }
 
+    @SuppressWarnings("unchecked")
     private void remove(Node node) {
         if (node.prev != null) {
             node.prev.next = node.next;
@@ -72,6 +73,7 @@ public class LRUCache<K, V> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void putToHead(Node node){
         node.next = this.head;
         node.prev = null;
