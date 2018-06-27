@@ -27,7 +27,7 @@ public class BalancedBracketsTest {
         strings.add("{[()]}");
         strings.add("{[(])}");
         strings.add("{{[[(())]]}}");
-        strings.add("{{[[(())]]}()}");
+        strings.add("{{[[(())]]}() }");
 
         return strings;
     }

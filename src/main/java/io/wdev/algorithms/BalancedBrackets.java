@@ -4,20 +4,31 @@ import java.util.Stack;
 
 public class BalancedBrackets {
 
-    private final static char[][] TOKENS = {{'{', '}'},{'(',')'},{'[',']'}};
+    // dictionary[n][0] is head
+    // dictionary[n][1] is tail
+    private final static char[][] dictionary = {{'{', '}'},{'(',')'},{'[',']'}};
 
     private static boolean isHead(char c) {
-        for (char[] arr: TOKENS) {
-            if (arr[0] == c) {
+        for (char[] dict: dictionary) {
+            if (dict[0] == c) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean hasHead(char head, char c) {
-        for (char[] arr: TOKENS) {
-            if (arr[1] == c && arr[0] == head) {
+    private static boolean isTail(char c) {
+        for (char[] dict: dictionary) {
+            if (dict[1] == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isMyHead(char head, char tail) {
+        for (char[] dict: dictionary) {
+            if (dict[1] == tail && dict[0] == head) {
                 return true;
             }
         }
@@ -31,12 +42,12 @@ public class BalancedBrackets {
             if (isHead(c)) {
                 stack.push(c);
             } else {
-                if (stack.isEmpty() || !hasHead(stack.pop(), c)) {
+                if (isTail(c) && (stack.isEmpty() || !isMyHead(stack.pop(), c))) {
                     return false;
                 }
             }
         }
 
-        return true;
+        return stack.isEmpty();
     }
 }
